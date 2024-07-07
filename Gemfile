@@ -17,6 +17,7 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 gem 'devise'
+gem 'devise-jwt'
 gem 'httparty'
 gem 'cpf_cnpj'
 gem 'bcrypt', '~> 3.1.7'
