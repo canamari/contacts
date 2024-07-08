@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: 12345678
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - contacts-network
 
   web:
     build: .
@@ -18,13 +20,36 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - elasticsearch
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: cleuber
       DATABASE_PASSWORD: 12345678
       DATABASE_NAME: contact_list_app_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     env_file:
       - .env
+    networks:
+      - contacts-network
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    networks:
+      - contacts-network
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
 volumes:
   postgres_data:
+
+networks:
+  contacts-network:
+    driver: bridge

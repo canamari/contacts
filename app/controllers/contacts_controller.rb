@@ -3,7 +3,7 @@ class ContactsController < ApplicationController
 
   def index
     if params[:query].present?
-      @contacts = Contact.search(params[:query]).records.where(user_id: current_user.id)
+      @contacts = Contact.search(params[:query])
     else
       @contacts = Contact.where(user_id: current_user.id)
     end
@@ -36,6 +36,6 @@ class ContactsController < ApplicationController
   private
 
   def contact_params
-    params.require(:contact).permit(:name, :cpf, :cep, :phone, :address, :latitude, :longitude)
+    params.require(:contact).permit(:user_id, :name, :cpf, :cep, :phone, :address, :latitude, :longitude)
   end
 end

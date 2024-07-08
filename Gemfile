@@ -21,8 +21,12 @@ gem 'devise-jwt'
 gem 'httparty'
 gem 'cpf_cnpj'
 gem 'bcrypt', '~> 3.1.7'
-gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
+gem 'elasticsearch', '~> 7.10'
+gem 'elasticsearch-model', '~> 7.1'
+gem 'elasticsearch-rails', '~> 7.1'
+gem 'faker'
+gem 'dotenv-rails', groups: [:development, :test]
+gem 'searchkick'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

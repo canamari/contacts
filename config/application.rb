@@ -11,6 +11,7 @@ module Myapp
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
     config.action_controller.allow_forgery_protection = false
+    config.devise_jwt_secret_key = ENV['DEVISE_JWT_SECRET_KEY']
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

@@ -1,0 +1,7 @@
+# config/elasticsearch.yml
+development:
+  host: "http://elasticsearch:9200"
+test:
+  host: "http://elasticsearch:9200"
+production:
+  host: <%= ENV['ELASTICSEARCH_URL'] %>

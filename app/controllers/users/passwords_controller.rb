@@ -3,9 +3,9 @@ module Users
     respond_to :json
 
     def create
-      self.resource = resource_class.find_or_initialize_with_errors(reset_password_keys, resource_params, :not_found)
-      if resource.persisted?
-        resource.send_reset_password_instructions
+      self.resource = resource_class.send_reset_password_instructions(resource_params)
+
+      if successfully_sent?(resource)
         render json: {
           status: { message: 'Instructions for resetting your password have been sent to your email.' }
         }, status: :ok
