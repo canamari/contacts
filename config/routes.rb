@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   }
 
   resources :users, only: [:index, :show, :update, :destroy]
-  # resources :contacts, except: [:new, :edit]
+  resources :contacts, except: [:new, :edit]
 end
