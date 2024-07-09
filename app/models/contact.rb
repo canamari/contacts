@@ -3,6 +3,9 @@ class Contact < ApplicationRecord
 
   belongs_to :user
 
+  validates :name, :cep, :address, presence: true
+  validates :cpf, presence: :true, cpf: true
+
   def search_data
     {
       name: name,
