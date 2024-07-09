@@ -44,6 +44,9 @@ module Users
           message: 'User has no active session.'
         }, status: :unauthorized
       end
+      
+    rescue JWT::DecodeError
+      render json: { status: { message: 'Invalid token.' } }, status: :unauthorized
     end
   end
 end

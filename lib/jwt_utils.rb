@@ -4,8 +4,6 @@ module JwtUtils
   end
 
   def self.decode(token)
-    puts token
-    puts jwt_secret_key
     JWT.decode(token, jwt_secret_key).first
   end
 

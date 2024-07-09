@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Users::SessionsController, type: :controller do
   include Devise::Test::ControllerHelpers
+
   before do
     DatabaseCleaner.start
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -29,7 +30,6 @@ context 'with invalid credentials' do
     it 'returns an unauthorized status' do
         post :create, params: { user: { email: 'test2@example.com', password: 'wrong_password' } }, format: :json
         expect(response).to have_http_status(:unauthorized)
-        puts JSON.parse(response.body)['error']
         expect(JSON.parse(response.body)['error']).to eq('Invalid Email or password.')
       end
     end
@@ -41,6 +41,7 @@ context 'with invalid credentials' do
 
     context 'with a valid token' do
       it 'logs out successfully' do
+
         request.headers['Authorization'] = "Bearer #{token}"
         delete :destroy, format: :json
         expect(response).to have_http_status(:ok)
@@ -53,7 +54,7 @@ context 'with invalid credentials' do
         request.headers['Authorization'] = "Bearer invalid_token"
         delete :destroy, format: :json
         expect(response).to have_http_status(:unauthorized)
-        expect(JSON.parse(response.body)['message']).to eq('User has no active session.')
+        expect(JSON.parse(response.body)["status"]['message']).to eq('Invalid token.')
       end
     end
   end
