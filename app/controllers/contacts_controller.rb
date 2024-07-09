@@ -1,41 +1,55 @@
 class ContactsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_contact, only: [:update, :destroy]
 
   def index
     if params[:query].present?
-      @contacts = Contact.search(params[:query])
+      @contacts = Contact.search(params[:query], where: { user_id: current_user.id })
     else
-      @contacts = Contact.where(user_id: current_user.id)
+      @contacts = current_user.contacts
     end
     render json: @contacts
   end
 
   def create
-    contact = Contact.new(contact_params)
-    if contact.save
-      render json: contact, status: :ok
+    @contact = current_user.contacts.build(contact_params)
+    set_coordinates
+    if @contact.save
+      render json: @contact, status: :ok
     else
-      render json: contact.errors, status: :unprocessable_entity
+      render json: @contact.errors, status: :unprocessable_entity
     end
   end
 
   def update
-    contact = Contact.find(params[:id])
-    if contact.update(contact_params)
-      render json: contact, status: :ok
+    @contact.assign_attributes(contact_params)
+    set_coordinates
+    if @contact.save
+      render json: @contact, status: :ok
     else
-      render json: contact.errors, status: :unprocessable_entity
+      render json: @contact.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    contact = Contact.find(params[:id])
-    contact.destroy
+    @contact.destroy
+    render json: { message: 'Contact deleted successfully.' }
   end
 
   private
 
   def contact_params
-    params.require(:contact).permit(:user_id, :name, :cpf, :cep, :phone, :address, :latitude, :longitude)
+    params.require(:contact).permit(:name, :cpf, :cep, :phone, :address)
   end
+
+  def set_contact
+    @contact = current_user.contacts.find(params[:id])
+  end
+
+  def set_coordinates
+    coordinates = GoogleMapsService.get_coordinates(@contact.address)
+    @contact.latitude = coordinates.nil? ? nil : coordinates['lat'] 
+    @contact.longitude = coordinates.nil? ? nil : coordinates['lng']
+  end
+
 end

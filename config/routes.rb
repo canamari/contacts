@@ -9,4 +9,11 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show, :update, :destroy]
   resources :contacts, except: [:new, :edit]
+
+  resources :addresses, only: [] do
+    collection do
+      get :show, path: 'show/:cep', action: 'show'
+    end
+  end
+
 end

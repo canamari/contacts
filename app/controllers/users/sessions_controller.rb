@@ -31,8 +31,6 @@ module Users
     end
 
     def respond_to_on_destroy
-      puts request.headers['Authorization'].split(' ').last
-      puts 'request.headers'
       jwt_payload = JWT.decode(request.headers['Authorization'].split(' ').last, ENV['DEVISE_JWT_SECRET_KEY']).first
       current_user = User.find(jwt_payload['sub'])
       if current_user
