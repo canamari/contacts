@@ -19,8 +19,8 @@ gem "jbuilder"
 gem 'httparty'
 gem 'cpf_cnpj'
 gem 'bcrypt', '~> 3.1.7'
-gem 'elasticsearch', '~> 7.10'
-gem 'elasticsearch-model', '~> 7.1'
+gem 'elasticsearch', '~> 8.14'
+gem 'elasticsearch-model', '~> 8.0'
 gem 'elasticsearch-rails', '~> 7.1'
 gem 'faker'
 gem 'dotenv-rails', groups: [:development, :test]
