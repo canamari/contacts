@@ -43,7 +43,8 @@ wait_for_elasticsearch
       name: Faker::Name.name,
       phone: Faker::PhoneNumber.cell_phone,
       address: Faker::Address.full_address,
-      cpf: CPF.generate
+      cpf: CPF.generate,
+      cep: 73081525
     )
   end
 end

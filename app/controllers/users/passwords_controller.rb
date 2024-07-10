@@ -1,38 +1,36 @@
 module Users
-  class PasswordsController < Devise::PasswordsController
-    respond_to :json
+  class PasswordsController < ApplicationController
+    skip_before_action :authenticate_request
 
-    def create
-      self.resource = resource_class.send_reset_password_instructions(resource_params)
+    def forgot
+      user = User.find_by(email: params[:user][:email])
 
-      if successfully_sent?(resource)
-        render json: {
-          status: { message: 'Instructions for resetting your password have been sent to your email.' }
-        }, status: :ok
+      if user
+        PasswordResetService.new(user).send_reset_email
+        render json: { message: 'Email de recuperação de senha enviado com sucesso.' }, status: :ok
       else
-        render json: {
-          status: { message: "Email not found. Please check and try again." }
-        }, status: :unprocessable_entity
+        render json: { error: 'Email não encontrado. Verifique o email digitado.' }, status: :not_found
       end
     end
 
-    def update
-      self.resource = resource_class.reset_password_by_token(resource_params)
-      if resource.errors.empty?
-        render json: {
-          status: { message: 'Your password has been successfully updated.' }
-        }, status: :ok
+    def reset
+      @user = User.find_by(reset_password_token: params[:user][:token])
+      if @user
+        if @user.update(user_params)
+          @user.update(reset_password_token: nil, reset_password_sent_at: nil)
+          render json: { message: 'Senha resetada com sucesso.' }, status: :ok
+        else
+          render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+        end
       else
-        render json: {
-          status: { message: resource.errors.full_messages.join(', ') }
-        }, status: :unprocessable_entity
+        render json: { error: 'Token inválido ou expirado. Solicite outro email de recuperação de senha.' }, status: :unprocessable_entity
       end
     end
 
     private
 
-    def resource_params
-      params.require(:user).permit(:email, :password, :password_confirmation, :reset_password_token)
+    def user_params
+      params.require(:user).permit(:password, :password_confirmation)
     end
   end
 end

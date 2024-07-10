@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!
-
   def update
     @user = User.find(params[:id])
     if @user.update(user_params)

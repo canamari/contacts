@@ -16,8 +16,6 @@ gem "turbo-rails"
 gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
-gem 'devise'
-gem 'devise-jwt'
 gem 'httparty'
 gem 'cpf_cnpj'
 gem 'bcrypt', '~> 3.1.7'
@@ -27,6 +25,10 @@ gem 'elasticsearch-rails', '~> 7.1'
 gem 'faker'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'searchkick'
+gem 'bcrypt', '~> 3.1.7'
+gem 'jwt', '~> 2.2', '>= 2.2.3'
+gem 'mail'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

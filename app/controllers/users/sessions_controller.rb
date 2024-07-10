@@ -1,52 +1,30 @@
 module Users
-  class SessionsController < Devise::SessionsController
+  class SessionsController < ApplicationController
     include JwtUtils
+    skip_before_action :authenticate_request, only: :create
+    
+    def create
+      user = User.find_by(email: params[:user][:email])
+      if user && user.authenticate(params[:user][:password])
+        payload = {
+          user_id: user.id,
+          exp: Time.now
+        }
 
-    respond_to :json
-    skip_before_action :verify_authenticity_token, if: :json_request?
-
-    private
-
-    def json_request?
-      request.format.json?
-    end
-
-    def respond_with(resource, _opts = {})
-      if resource.persisted?
-        render json: {
-          status: { code: 200, message: 'Logged in successfully.' },
-          data: resource,
-          token: generate_jwt_token(resource)
-        }, status: :ok
+        token = JwtUtils.encode(user.id)
+        render json: { user: user, token: token }, status: :ok
       else
-        render json: {
-          status: { message: "Invalid email or passsssword." }
-        }, status: :unauthorized
+        render json: { error: 'Credenciais inválidas' }, status: :unauthorized
       end
     end
 
-    def generate_jwt_token(user)
-      payload = { sub: user.id }
-      JwtUtils.encode(payload)
-    end
-
-    def respond_to_on_destroy
-      jwt_payload = JwtUtils.decode(request.headers['Authorization'].split(' ').last)
-      current_user = User.find(jwt_payload['sub'])
-      if current_user
-        render json: {
-          status: 200,
-          message: 'Logged out successfully.'
-        }, status: :ok
-      else
-        render json: {
-          status: 401,
-          message: 'User has no active session.'
-        }, status: :unauthorized
+    def destroy
+      token = request.headers['Authorization']&.split(' ')&.last
+      if token
+        JwtDenylist.create(jti: token, exp: Time.now)
+        render json: { message: 'Deslogado com sucesso' }, status: :ok
       end
-      
-    rescue JWT::DecodeError
-      render json: { status: { message: 'Invalid token.' } }, status: :unauthorized
+      head :no_content
     end
   end
 end
