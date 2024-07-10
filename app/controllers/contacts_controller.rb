@@ -3,7 +3,7 @@ class ContactsController < ApplicationController
 
   def index
     if params[:query].present?
-      @contacts = Contact.search(params[:query], where: { user_id: current_user.id })
+      @contacts = Contact.search(params[:query])
     else
       @contacts = current_user.contacts
     end

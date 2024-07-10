@@ -6,11 +6,6 @@ module Users
     def create
       user = User.find_by(email: params[:user][:email])
       if user && user.authenticate(params[:user][:password])
-        payload = {
-          user_id: user.id,
-          exp: Time.now
-        }
-
         token = JwtUtils.encode(user.id)
         render json: { user: user, token: token }, status: :ok
       else
@@ -24,7 +19,6 @@ module Users
         JwtDenylist.create(jti: token, exp: Time.now)
         render json: { message: 'Deslogado com sucesso' }, status: :ok
       end
-      head :no_content
     end
   end
 end

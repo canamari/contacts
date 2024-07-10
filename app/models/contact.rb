@@ -9,7 +9,8 @@ class Contact < ApplicationRecord
   def search_data
     {
       name: name,
-      cpf: cpf
+      cpf: cpf,
+      user_id: user_id
     }
   end
 end

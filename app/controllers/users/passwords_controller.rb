@@ -9,7 +9,7 @@ module Users
         PasswordResetService.new(user).send_reset_email
         render json: { message: 'Email de recuperação de senha enviado com sucesso.' }, status: :ok
       else
-        render json: { error: 'Email não encontrado. Verifique o email digitado.' }, status: :not_found
+        render json: { error: 'Email não encontrado. Verifique o email digitado.' }, status: :unprocessable_entity
       end
     end
 

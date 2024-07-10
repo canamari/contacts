@@ -6,7 +6,7 @@ module Users
       user = User.new(user_params)
 
       if user.save
-        render json: { user: user }, status: :created
+        render json: { user: user }, status: :ok
       else
         render json: { error: user.errors.full_messages.join(', ') }, status: :unprocessable_entity
       end

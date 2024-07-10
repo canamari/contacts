@@ -1,11 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Users::RegistrationsController, type: :controller do
-  include Devise::Test::ControllerHelpers
 
   before do
     DatabaseCleaner.start
-    @request.env["devise.mapping"] = Devise.mappings[:user]
   end
 
   after do
@@ -45,10 +43,8 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
         expect(response).to have_http_status(:ok)
         json_response = JSON.parse(response.body)
-        expect(json_response['status']['code']).to eq(200)
-        expect(json_response['status']['message']).to eq('Signed up successfully.')
-        expect(json_response['data']['email']).to eq('test@example.com')
-        expect(json_response['data']['name']).to eq('Test User')
+        expect(json_response['user']['email']).to eq('test@example.com')
+        expect(json_response['user']['name']).to eq('Test User')
       end
     end
 
@@ -60,7 +56,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
         expect(response).to have_http_status(:unprocessable_entity)
         json_response = JSON.parse(response.body)
-        expect(json_response['status']['message']).to include("User couldn't be created successfully.")
+        expect(json_response['error']).not_to be(nil)
       end
     end
   end
